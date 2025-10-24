@@ -1,0 +1,1 @@
+Druga linia po Mergu
