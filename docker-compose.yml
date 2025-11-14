@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  # SERWIS 1: Twoja aplikacja Python
+  python-app:
+    build: .
+    container_name: python-app
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - mysql-db
+
+  # SERWIS 2: Baza danych MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=mydb
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  app-network:
+
+volumes:
+  mysql-data:
+
