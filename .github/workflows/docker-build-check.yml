@@ -1,0 +1,27 @@
+name: 🐳 Docker Build Check
+
+on:
+  push:
+    branches: [ main, test ] # Uruchamiany przy commit na gałęzie main i test
+  pull_request:
+    branches: [ main, test ] # Uruchamiany przy Pull Request na gałęzie main i test
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Build Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        # Kontekst budowania to katalog główny
+        context: .
+        # Wskazanie na plik Dockerfile
+        file: Dockerfile
+        # Wskazanie tagu
+        tags: ${{ github.repository }}/python-app:latest
+        # Flaga --load, która buduje obraz, ale go nie wypycha (tylko test)
+        push: false
+        load: true
