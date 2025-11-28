@@ -1,0 +1,22 @@
+name: 1. Sprawdzenie Budowania Obrazu Dockerowego
+
+on:
+  push:
+    branches: [ test ] # ZMIENIONO: Uruchom przy push na gałąź 'test'
+  pull_request:
+    branches: [ test ] # ZMIENIONO: Uruchom przy Pull Requestach do gałęzi 'test'
+  workflow_dispatch: # Pozwól na ręczne uruchomienie
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Python Application Docker Image
+        run: |
+          echo "Starting Docker build..."
+          docker build . --tag python-app-test:latest 
+          echo "Docker build finished successfully."
+
