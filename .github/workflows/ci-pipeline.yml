@@ -3,10 +3,10 @@ name: CI/CD Pipeline - Build and Test
 on:
   push:
     branches:
-      - main
+      - test
   pull_request:
     branches:
-      - main
+      - test
   workflow_dispatch: # Pozwala na ręczne uruchomienie workflowu
 
 jobs:
