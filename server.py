@@ -75,7 +75,7 @@ def _get_user_id_from_path(path):
         return None
 
 
-# --- HANDLER KLASY HTTP ---
+# --- HANDLER KLASY HTTP (obsługa wszystkich metod HTTP) ---
 
 class UserHandler(BaseHTTPRequestHandler):
     
@@ -248,5 +248,5 @@ class UserHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     httpd = HTTPServer(("", PORT), UserHandler)
-    print(f"Serving simplified CRUD app on port {PORT}. DB Host: {DB_HOST}")
+    print(f"Serving full CRUD app on port {PORT}. DB Host: {DB_HOST}")
     httpd.serve_forever()
