@@ -1,0 +1,57 @@
+name: CI/CD Pipeline - Build and Test
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    env:
+      IMAGE_NAME: python-app-test
+
+    steps:
+    - name: 1. Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 2. Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: 2.5 Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker-compose -y
+        
+    - name: 3. Build Docker Image for Testing
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false 
+        tags: ${{ env.IMAGE_NAME }}:latest
+        load: true 
+        
+    - name: 4. Run Integration Tests (Start Services)
+      run: |
+        echo "Building and running services..."
+        docker-compose up -d
+        echo "Waiting 15 seconds for services to become healthy..."
+        sleep 15
+        echo "Running DB status check (GET /db-status)..."
+        curl -f http://localhost:8080/db-status
+        echo "Running User Creation Test (POST /users)..."
+        curl -X POST http://localhost:8080/users \
+             -H "Content-Type: application/json" \
+             -d '{"name": "Test User", "email": "test@action.pl"}' \
+             -f
+        echo "Running User List Test (GET /users)..."
+        curl -X GET http://localhost:8080/users -f | grep "Test User"
+
+    - name: 5. Cleanup (Stop services)
+      if: always()
+      run: docker-compose down
